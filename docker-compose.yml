@@ -1,0 +1,39 @@
+version: '3'
+services:
+
+  frontend:
+    image: node:10.19.0-alpine3.9
+    container_name: frontend-node
+    volumes:
+      - ./frontend:/app/frontend
+    ports:
+      - 80:8080
+    depends_on:
+      - database
+      - backend
+    networks:
+      - frontend-ingress
+
+  backend:
+    image: python:3.7-alpine3.9
+    container_name: backend-python
+    volumes:
+      - ./backend:/app/backend
+    depends_on:
+      - database
+    ports:
+      - 6000:6000
+    networks:
+      - database
+
+  database:
+    image: mysql:5.6.47
+    container_name: database-mysql
+    networks:
+      - database
+
+networks:
+  frontend-ingress:
+    name=frontend-ingress
+  database:
+    name=database
